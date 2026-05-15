@@ -1,33 +1,48 @@
 import post from "../models/post.model.js";
-import cloudinary from "../services/storage.service.js";
+import { uploadImg } from "../services/storage.service.js";
 
 const createPost = async (req, res) => {
 
-    console.log("check", req.body);
-    console.log("check", req.file);
+    try {
 
-    const result = await cloudinary.uploader.upload(req.file.path)
-    console.log(req.file.path)
+        const { title, content } = req.body;
 
-    console.log(result, 'result check');
-    console.log(result.secure_url);
+        // 1. Validate first
+        if (!title || !content || !req.file) {
+            return res.status(400).json({
+                message: "All fields are required!"
+            });
+        }
 
+        // 2. Upload image
+        const uplodCheck = await uploadImg(req.file);
 
+        if (!uplodCheck || !uplodCheck.secure_url) {
+            return res.status(500).json({
+                message: "Image upload failed!"
+            });
+        }
 
-    // const { title, content, image } = req.body
-    // console.log(title, content, image, "check===>");
+        // 3. Create post
+        const posts = await post.create({
+            title,
+            content,
+            image: uplodCheck.secure_url,
+            public_id: uplodCheck.public_id
+        });
 
-    // if (!title || !content || !image) {
-    //     return res.status(400).json({
-    //         message: "All field required!"
-    //     })
-    // }
+        return res.status(201).json({
+            message: "Post created successfully!",
+            posts
+        });
 
-    // const posts = await post.create({ title, content, image })
-    // res.status(200).json({
-    //     message: "Post created successfully!",
-    //     posts
-    // })
-}
+    } catch (error) {
+        console.log(error, "error in creating post");
 
-export { createPost }
+        return res.status(500).json({
+            message: "Server error"
+        });
+    }
+};
+
+export { createPost };

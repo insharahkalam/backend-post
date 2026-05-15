@@ -9,4 +9,38 @@ cloudinary.config({
     api_secret: process.env.API_SECRET
 });
 
-export default cloudinary
+
+const uploadImg = async (file) => {
+    console.log(file, "===>cloud check file");
+
+    const fileName = `Posts-${file.originalname.split(".")[0]}_${Date.now()}`
+    console.log(fileName, "=========>check filename");
+
+    const uploadStreme = new Promise((resolve, reject) => {
+        const upload = cloudinary.uploader.upload_stream({
+            public_id: fileName,
+            folder: "posts",
+            overwrite: false,
+            unique_filename: true,
+            use_filename: true,
+            resource_type: 'auto'
+        }, (error, result) => {
+            if (error) {
+                console.log(error, "uploading img error");
+                return reject(error)
+            }
+            if (result) {
+                console.log(result, "upload results");
+                resolve(result)
+            }
+
+        })
+        upload.end(file.buffer)
+    })
+    console.log(uploadStreme, 'streme check');
+    return uploadStreme
+
+
+}
+
+export { uploadImg }
