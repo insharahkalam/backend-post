@@ -1,5 +1,5 @@
 import post from "../models/post.model.js";
-import { uploadImg } from "../services/storage.service.js";
+import { deleteImg, uploadImg } from "../services/storage.service.js";
 
 const createPost = async (req, res) => {
 
@@ -45,4 +45,37 @@ const createPost = async (req, res) => {
     }
 };
 
-export { createPost };
+
+const deletePost = async (req, res) => {
+    const { id } = req.params
+    try {
+        const find = await post.findById(id)
+        if (find == null) {
+            return res.status(404).json({ status: false, message: 'post not found' })
+        }
+        const dltpostImg = await deleteImg(find.public_id)
+        console.log('dlt--->', dltpostImg);
+        const delePost = await post.findByIdAndDelete(id)
+        console.log('result in deleting data-->', delePost);
+
+        if (delePost == null) {
+            return res.status(404).json({ status: false, message: 'post not found' })
+        }
+        return res.status(200).json({ status: false, message: 'SUCCESSFULLY DELETEED' })
+
+    } catch (error) {
+        return res.status(400).json({ status: false, message: error.message })
+    }
+}
+
+
+const getAllPost = async (req, res) => {
+    const getPost = await post.find()
+    res.status(200).json({
+        message: "fetched success",
+        getPost
+
+    })
+}
+
+export { createPost, deletePost, getAllPost };
