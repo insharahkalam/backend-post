@@ -5,7 +5,8 @@ const createPost = async (req, res) => {
 
     try {
         console.log(req.body, "check body request===");
-        const { title, content, userId } = req.body;
+        const { title, content } = req.body;
+        const userId = req.user.id;
 
         // 1. Validate first
         if (!title || !content || !req.file) {
@@ -73,7 +74,6 @@ const getAllPost = async (req, res) => {
     res.status(200).json({
         message: "fetched success",
         getPost
-
     })
 }
 
