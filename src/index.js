@@ -6,6 +6,7 @@ import dotenv from 'dotenv'
 import connectDB from './db/db.js'
 import router from './router/post.router.js'
 import cors from 'cors'
+import authRoute from './router/auth.router.js'
 dotenv.config()
 
 const app = express()
@@ -15,6 +16,7 @@ app.use(cors({
 }))
 connectDB()
 
+app.use('/api/auth', authRoute)
 app.use('/api/posts', router)
 
 app.listen(process.env.PORT, () => {

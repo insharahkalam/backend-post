@@ -15,8 +15,15 @@ const postSchema = new mongoose.Schema({
     },
     public_id: {
         type: String
+    },
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "users",
+        required: true
     }
 
+}, {
+    timestamps: true
 })
 const post = mongoose.model('posts', postSchema)
 export default post

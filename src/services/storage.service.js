@@ -9,17 +9,16 @@ cloudinary.config({
     api_secret: process.env.API_SECRET
 });
 
-
-const uploadImg = async (file) => {
+const uploadImg = async (file, folder = 'posts') => {
     console.log(file, "===>cloud check file");
 
-    const fileName = `Posts-${file.originalname.split(".")[0]}_${Date.now()}`
+    const fileName = `${folder}-${file.originalname.split(".")[0]}_${Date.now()}`
     console.log(fileName, "=========>check filename");
 
     const uploadStreme = new Promise((resolve, reject) => {
         const upload = cloudinary.uploader.upload_stream({
             public_id: fileName,
-            folder: "posts",
+            folder: folder,
             overwrite: false,
             unique_filename: true,
             use_filename: true,
@@ -33,14 +32,11 @@ const uploadImg = async (file) => {
                 console.log(result, "upload results");
                 resolve(result)
             }
-
         })
         upload.end(file.buffer)
     })
     console.log(uploadStreme, 'streme check');
     return uploadStreme
-
-
 }
 
 const deleteImg = async (public_id) => {
@@ -56,8 +52,5 @@ const deleteImg = async (public_id) => {
     }
 
 }
-
-
-
 
 export { uploadImg, deleteImg }

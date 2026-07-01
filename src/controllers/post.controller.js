@@ -4,8 +4,8 @@ import { deleteImg, uploadImg } from "../services/storage.service.js";
 const createPost = async (req, res) => {
 
     try {
-
-        const { title, content } = req.body;
+        console.log(req.body, "check body request===");
+        const { title, content, userId } = req.body;
 
         // 1. Validate first
         if (!title || !content || !req.file) {
@@ -15,7 +15,7 @@ const createPost = async (req, res) => {
         }
 
         // 2. Upload image
-        const uplodCheck = await uploadImg(req.file);
+        const uplodCheck = await uploadImg(req.file, 'posts');
 
         if (!uplodCheck || !uplodCheck.secure_url) {
             return res.status(500).json({
@@ -27,6 +27,7 @@ const createPost = async (req, res) => {
         const posts = await post.create({
             title,
             content,
+            userId,
             image: uplodCheck.secure_url,
             public_id: uplodCheck.public_id
         });
@@ -44,7 +45,6 @@ const createPost = async (req, res) => {
         });
     }
 };
-
 
 const deletePost = async (req, res) => {
     const { id } = req.params
@@ -68,7 +68,6 @@ const deletePost = async (req, res) => {
     }
 }
 
-
 const getAllPost = async (req, res) => {
     const getPost = await post.find()
     res.status(200).json({
@@ -78,4 +77,16 @@ const getAllPost = async (req, res) => {
     })
 }
 
-export { createPost, deletePost, getAllPost };
+const getMyPost = async (req, res) => {
+    const { id } = req.params
+    console.log(id);
+    const myPost = await post.find({ userId: req.user.id })
+    console.log(myPost, 'check post')
+
+    res.status(200).json({
+        message: "Post Fetched succussfully",
+        myPost
+    })
+}
+
+export { createPost, deletePost, getAllPost, getMyPost };
