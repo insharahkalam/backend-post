@@ -19,6 +19,12 @@ connectDB()
 app.use('/api/auth', authRoute)
 app.use('/api/posts', router)
 
+app.get("/", (req, res) => {
+    res.json({
+        message: "Server is running on port 3000"
+    });
+});
+
 app.listen(process.env.PORT, () => {
     console.log(`server is runnning on port ${process.env.PORT}`);
 
