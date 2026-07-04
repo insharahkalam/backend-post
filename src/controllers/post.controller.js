@@ -7,6 +7,8 @@ const createPost = async (req, res) => {
         console.log(req.body, "check body request===");
         const { title, content } = req.body;
         const userId = req.user.id;
+        console.log(userId,"checking user id");
+        
 
         // 1. Validate first
         if (!title || !content || !req.file) {
@@ -39,7 +41,7 @@ const createPost = async (req, res) => {
         });
 
     } catch (error) {
-        console.log(error, "error in creating post");
+        console.log(error, "Error in creating post:", error.message, error.stack);
 
         return res.status(500).json({
             message: "Server error"
