@@ -73,6 +73,9 @@ const deletePost = async (req, res) => {
 
 const getAllPost = async (req, res) => {
     const getPost = await post.find()
+        .populate("userId", "username image")
+        .sort({ createdAt: -1 });
+
     res.status(200).json({
         message: "fetched success",
         getPost
@@ -81,14 +84,13 @@ const getAllPost = async (req, res) => {
 
 const getMyPost = async (req, res) => {
     const { id } = req.params
-    console.log(id);
     const myPost = await post.find({ userId: req.user.id })
-    console.log(myPost, 'check post')
+        .populate("userId", "username image")
+        .sort({ createdAt: -1 });
 
     res.status(200).json({
         message: "Post Fetched succussfully",
         myPost
     })
 }
-
 export { createPost, deletePost, getAllPost, getMyPost };
