@@ -7,8 +7,8 @@ const createPost = async (req, res) => {
         console.log(req.body, "check body request===");
         const { title, content } = req.body;
         const userId = req.user.id;
-        console.log(userId,"checking user id");
-        
+        console.log(userId, "checking user id");
+
 
         // 1. Validate first
         if (!title || !content || !req.file) {
