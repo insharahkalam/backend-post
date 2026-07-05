@@ -35,7 +35,6 @@ const createPost = async (req, res) => {
             userId,
             image: uplodCheck.secure_url,
             public_id: uplodCheck.public_id,
-            estimatedReadTime: calculateReadTime(content)
         });
 
         return res.status(201).json({
